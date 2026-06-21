@@ -27,7 +27,7 @@ function App() {
           )
         )}
       </div>
-      <img className='AuctionJournal-AUI3TY8E4EIB' src='https://auctionjournal.com/_next/image?url=%2Fimages%2Flogos%2Flogo1.png&w=640&q=75' />
+      <img className='AuctionJournal-AUI3TY8E4EIB' src='https://auctionjournal.com/_next/image?url=%2Fimages%2Flogos%2Flogo1.png&w=640&q=75' alt="Auction Journal Logo" />
     </div>
   );
 }
