@@ -1,12 +1,12 @@
 import React, { useRef, useEffect, useState } from "react";
-import { BrowserMultiFormatReader, BarcodeFormat } from "@zxing/library";
+import { BrowserMultiFormatReader } from "@zxing/library";
 import { Parse } from "aamva-parser";
 
 const Scanner = ({ onSuccess = () => {} }) => {
   const videoRef = useRef(null);
+  const mediaStreamRef = useRef(null);
   const [scannedData, setScannedData] = useState(null);
   const [error, setError] = useState(null);
-  let mediaStream = null; // Track the video stream
 
   useEffect(() => {
     const codeReader = new BrowserMultiFormatReader();
@@ -57,7 +57,7 @@ const Scanner = ({ onSuccess = () => {} }) => {
         );
 
         // Capture the media stream for stopping later
-        mediaStream = videoRef.current?.srcObject;
+        mediaStreamRef.current = videoRef.current?.srcObject;
       } catch (err) {
         console.error("Error initializing scanner:", err);
         setError("Error initializing scanner. Check camera permissions.");
@@ -74,8 +74,8 @@ const Scanner = ({ onSuccess = () => {} }) => {
   }, []);
 
   const stopCamera = () => {
-    if (mediaStream) {
-      const tracks = mediaStream.getTracks();
+    if (mediaStreamRef.current) {
+      const tracks = mediaStreamRef.current.getTracks();
       tracks.forEach((track) => {
         track.stop(); // Stop each track
         console.log("Track stopped:", track);
@@ -83,7 +83,7 @@ const Scanner = ({ onSuccess = () => {} }) => {
       if (videoRef.current) {
         videoRef.current.srcObject = null; // Explicitly set the video source to null
       }
-      mediaStream = null;
+      mediaStreamRef.current = null;
     }
   };
 
