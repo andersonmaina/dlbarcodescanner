@@ -1,12 +1,18 @@
-import React, { useRef, useEffect, useState } from "react";
+import React, { useRef, useEffect, useState, useCallback } from "react";
 import { BrowserMultiFormatReader } from "@zxing/library";
 import { Parse } from "aamva-parser";
 
 const Scanner = ({ onSuccess = () => {} }) => {
   const videoRef = useRef(null);
   const mediaStreamRef = useRef(null);
+  const onSuccessRef = useRef(onSuccess);
   const [scannedData, setScannedData] = useState(null);
   const [error, setError] = useState(null);
+
+  // Update the ref whenever onSuccess changes
+  useEffect(() => {
+    onSuccessRef.current = onSuccess;
+  }, [onSuccess]);
 
   useEffect(() => {
     const codeReader = new BrowserMultiFormatReader();
@@ -36,7 +42,7 @@ const Scanner = ({ onSuccess = () => {} }) => {
                 const parsedData = Parse(rawData); // Parse AAMVA data
                 setScannedData(parsedData);
                 if (parsedData.firstName) {
-                  onSuccess(parsedData);
+                  onSuccessRef.current(parsedData);
                   stopCamera(); // Stop the camera after successful scan
                 }
                 setError(null);
